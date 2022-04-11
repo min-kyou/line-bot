@@ -18,5 +18,8 @@ module LineBot
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    #
+    # /libファイル以下を自動でロード
+    config.autoload_paths += Dir["#{config.root}/lib"]
   end
 end
