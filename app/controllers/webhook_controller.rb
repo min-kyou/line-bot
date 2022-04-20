@@ -1,3 +1,11 @@
+require 'net/http'
+require 'open-uri'
+require 'json'
+require 'logger'
+require 'nokogiri'
+require 'line/bot'
+Bundler.require
+
 # webhookを叩いた時のアクションを定義するコントローラ
 
 class WebhookController < ApplicationController
