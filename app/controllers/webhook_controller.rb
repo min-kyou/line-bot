@@ -12,6 +12,9 @@ class WebhookController < ApplicationController
   skip_before_action :verify_authenticity_token
   
   def callback
+
+    body2 = request.body.read
+    
     url = 'https://qiita.com/Qiita/items/b5c1550c969776b65b9b'
 
     res = URI.open(url)
@@ -41,7 +44,7 @@ class WebhookController < ApplicationController
         # 記事url
         article_url = title_array[i].children.css('a')[1].attribute('href').text
 
-        body2 = request.body.read
+
         pp "===========-body"
         pp body2
         signature = request.env['HTTP_X_LINE_SIGNATURE']
