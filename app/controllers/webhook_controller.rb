@@ -4,6 +4,7 @@ class WebhookController < ApplicationController
   skip_before_action :verify_authenticity_token
   
   def callback
+    client = create_client
     body = request.body
     pp "===========-body"
     pp body
@@ -32,5 +33,14 @@ class WebhookController < ApplicationController
     end
 
     "OK"
+  end
+
+  private 
+  
+  def create_client
+    @client ||= Line::Bot::Client.new { |config|
+      config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
+      config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
+    }
   end
 end
