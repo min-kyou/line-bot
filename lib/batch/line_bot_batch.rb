@@ -8,7 +8,8 @@ Bundler.require
 
 # 引っかかったこと このクラス名はファイル名と合わせないとエラーをはく（あほ）
 # 401が出続ける→herokuのurlを間違えていた
-# 404が出続ける
+# 404が出続ける→/callbackを叩いた際のアクションが未定義だった（ばか）
+# それでも404が出続ける→
 class Batch::LineBotBatch
   def initialize
     # logger = Logger.new('../../../log/api.log')
