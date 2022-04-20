@@ -51,12 +51,16 @@ class Batch::LineBotBatch
       end
       i += 1
 
-      uri = URI('https://git.heroku.com/blueberry-custard-37486.git/callback')
-      params = {}
+      uri = URI('https://blueberry-custard-37486.herokuapp.com/callback')
+      params = {
+      }
       request = Net::HTTP.post_form(uri, params)
+      
+      # request = post('https://git.heroku.com/blueberry-custard-37486.git/callback')
       # ラインapi
       body = request.body
-      pp body
+      pp "===========-body"
+      pp request
       signature = request.env['HTTP_X_LINE_SIGNATURE']
       unless client.validate_signature(body, signature)
         halt 400, {'Content-Type' => 'text/plain'}, 'Bad Request'
