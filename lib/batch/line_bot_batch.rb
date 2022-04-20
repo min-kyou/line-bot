@@ -7,6 +7,8 @@ require 'line/bot'
 Bundler.require
 
 # 引っかかったこと このクラス名はファイル名と合わせないとエラーをはく（あほ）
+# 401が出続ける→herokuのurlを間違えていた
+# 404が出続ける
 class Batch::LineBotBatch
   def initialize
     # logger = Logger.new('../../../log/api.log')
@@ -60,7 +62,7 @@ class Batch::LineBotBatch
       # ラインapi
       body = request.body
       pp "===========-body"
-      pp request
+      pp body
       signature = request.env['HTTP_X_LINE_SIGNATURE']
       unless client.validate_signature(body, signature)
         halt 400, {'Content-Type' => 'text/plain'}, 'Bad Request'
