@@ -14,7 +14,7 @@ class WebhookController < ApplicationController
   def callback
 
     body2 = request.body.read
-    
+
     url = 'https://qiita.com/Qiita/items/b5c1550c969776b65b9b'
 
     res = URI.open(url)
@@ -45,11 +45,14 @@ class WebhookController < ApplicationController
         article_url = title_array[i].children.css('a')[1].attribute('href').text
 
 
+        signature = request.env['HTTP_X_LINE_SIGNATURE']
         pp "===========-body"
         pp body2
-        signature = request.env['HTTP_X_LINE_SIGNATURE']
+        pp signature
+
+
         unless client.validate_signature(body2, signature)
-          halt 400, {'Content-Type' => 'text/plain'}, 'Bad Request'
+          error 400 do 'Bad Request' end
         end
 
         events = client.parse_events_from(body2)
