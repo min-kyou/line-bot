@@ -61,7 +61,7 @@ class WebhookController < ApplicationController
         events = client.parse_events_from(body2)
 
         events.each do |event|
-          pp "=============event"
+          pp "=============event1"
           pp event
           case event
           when Line::Bot::Event::Message
