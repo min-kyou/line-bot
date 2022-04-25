@@ -10,10 +10,14 @@ Bundler.require
 
 class WebhookController < ApplicationController
   skip_before_action :verify_authenticity_token
+  protect_from_forgery except: [:callback]
   
   def callback
 
     body2 = request.body.read
+    signature = request.env['HTTP_X_LINE_SIGNATURE']
+    pp "===========request"
+    pp request
 
     url = 'https://qiita.com/Qiita/items/b5c1550c969776b65b9b'
 
@@ -44,8 +48,6 @@ class WebhookController < ApplicationController
         # 記事url
         article_url = title_array[i].children.css('a')[1].attribute('href').text
 
-
-        signature = request.env['HTTP_X_LINE_SIGNATURE']
         pp "===========-body"
         pp body2
         pp signature
