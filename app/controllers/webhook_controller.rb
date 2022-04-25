@@ -18,6 +18,11 @@ class WebhookController < ApplicationController
     signature = request.env['HTTP_X_LINE_SIGNATURE']
     pp "===========request"
     pp request
+    pp request.body
+
+    pp "===========-body"
+    pp body2
+    pp signature
 
     url = 'https://qiita.com/Qiita/items/b5c1550c969776b65b9b'
 
@@ -47,10 +52,6 @@ class WebhookController < ApplicationController
         # article_title = title_array[i].children.css('a')[1].text
         # 記事url
         article_url = title_array[i].children.css('a')[1].attribute('href').text
-
-        pp "===========-body"
-        pp body2
-        pp signature
 
 
         unless client.validate_signature(body2, signature)
