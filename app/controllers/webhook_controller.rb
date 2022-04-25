@@ -19,8 +19,6 @@ class WebhookController < ApplicationController
     pp "===========request"
     pp request
     pp request.body
-
-    pp "===========-body"
     pp body2
     pp signature
 
