@@ -92,7 +92,7 @@ class WebhookController < ApplicationController
     #     "OK"
     #   end
     # end
-
+    "OK"
   end
 
   private 
