@@ -36,6 +36,10 @@ class Batch::LineBotBatch
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
 
+    # 自分のuserId
+    user_id = ENV["LINE_MY_ID"]
+
+
     # num_array = []
     i = 0
     # h3タグ以下を取得
@@ -51,13 +55,20 @@ class Batch::LineBotBatch
         # article_title = title_array[i].children.css('a')[1].text
         # 記事url
         article_url = title_array[i].children.css('a')[1].attribute('href').text
+
+        message = {
+          type: 'text',
+          text: article_url
+        }
+
+        client.push_message(user_id, message)
       end
       i += 1
 
-      uri = URI('https://blueberry-custard-37486.herokuapp.com/callback')
-      params = {
-      }
-      request = Net::HTTP.post_form(uri, params)
+      # uri = URI('https://blueberry-custard-37486.herokuapp.com/callback')
+      # params = {
+      # }
+      # request = Net::HTTP.post_form(uri, params)
 
       # request = post('https://git.heroku.com/blueberry-custard-37486.git/callback')
       # ラインapi
@@ -88,7 +99,7 @@ class Batch::LineBotBatch
       #   end
       # end
       #
-      # "OK"
+      "OK"
 
     end
     # pp num_array

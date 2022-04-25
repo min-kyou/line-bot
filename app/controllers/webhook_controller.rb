@@ -20,11 +20,15 @@ class WebhookController < ApplicationController
     client = create_client
     events = client.parse_events_from(body2)
 
-    events.each do |event|
-      user_id = event['source']['userId']  #user_id取得
-      pp "============--userid"
-      pp 'UserID: ' + user_id # user_id
-    end
+    # 自分のuserId
+    user_id = ENV["LINE_MY_ID"]
+
+    # userId取得時に使ったコード
+    # events.each do |event|
+    #   user_id = event['source']['userId']  #user_id取得
+    #   pp "============--userid"
+    #   pp 'UserID: ' + user_id # user_id
+    # end
 
     signature = request.env['HTTP_X_LINE_SIGNATURE']
     pp "===========request"
