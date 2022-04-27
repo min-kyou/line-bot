@@ -17,6 +17,9 @@ class Batch::LineBotBatch
   end
 
   def self.run
+    #
+    # qiita関連
+    #
     url = 'https://qiita.com/Qiita/items/b5c1550c969776b65b9b'
     # 引っかかったこと1 res = open(url) だと`initialize': No such file or directory @ rb_sysopen のエラーがでる
     res = URI.open(url)
@@ -28,16 +31,26 @@ class Batch::LineBotBatch
     target_id = "#personal-public-article-body"
     body = html.css(target_id)
 
-    # line-botのクライアント作成
-    # client = create_client
     #
-    client ||= Line::Bot::Client.new { |config|
+    # line-bot関連
+    #
+    client = Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
+    pp "===========-"
+    pp client
 
     # 自分のuserId
     user_id = ENV["LINE_MY_ID"]
+
+    # 署名確認？
+    # request_body = request.body.read
+    # signature = request.env['HTTP_X_LINE_SIGNATURE']
+    # unless client.validate_signature(request_body, signature)
+    #   head :bad_request
+    # end
+    # events = client.parse_events_from(request_body)
 
 
     # num_array = []
@@ -56,12 +69,23 @@ class Batch::LineBotBatch
         # 記事url
         article_url = title_array[i].children.css('a')[1].attribute('href').text
 
-        message = {
-          type: 'text',
-          text: article_url
-        }
+        # 送信
+        # events.each { |event|
+        #   case event
+        #   when Line::Bot::Event::Message
+        #     case event.type
+        #     when Line::Bot::Event::MessageType::Text
+              # 本文作成
+              message = {
+                type: 'text',
+                text: article_url
+              }
 
-        client.push_message(user_id, message)
+              # 送信
+              client.push_message(user_id, message)
+          #   end
+          # end
+        # }
       end
       i += 1
 
