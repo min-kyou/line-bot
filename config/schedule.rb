@@ -27,12 +27,12 @@ set :environment, rails_env
 set :output, "#{Rails.root}/log/cron.log"
 
 # 日曜・木曜の6時に実行
-# every :monday, at: '6:00 am' do
-#   runner "Batch::LineBotBatch.run"
-# end
-#
-# every :thursday, at: '6:00 am' do
-#   runner "Batch::LineBotBatch.run"
-# end
+every :monday, at: '6:00 am' do
+  runner "Batch::LineBotBatch.run"
+end
+
+every :thursday, at: '6:00 am' do
+  runner "Batch::LineBotBatch.run"
+end
 
 # Learn more: http://github.com/javan/whenever

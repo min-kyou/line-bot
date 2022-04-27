@@ -11,157 +11,60 @@ Bundler.require
 # 404が出続ける→/callbackを叩いた際のアクションが未定義だった（ばか）
 # ActionController::InvalidAuthenticityToken (Can't verify CSRF token authenticity.)→
 class Batch::LineBotBatch
-  def initialize
-    # logger = Logger.new('../../../log/api.log')
-
-  end
 
   def self.run
-    #
+    #################################
     # qiita関連
-    #
+    #################################
+    # qiitaの週間トレンド記事ページからDOMを取得
     url = 'https://qiita.com/Qiita/items/b5c1550c969776b65b9b'
     # 引っかかったこと1 res = open(url) だと`initialize': No such file or directory @ rb_sysopen のエラーがでる
     res = URI.open(url)
-    body = res.read
+    res_body = res.read
 
     charset = res.charset
-    html = Nokogiri::HTML.parse(body, nil, charset)
+    html = Nokogiri::HTML.parse(res_body, nil, charset)
 
+    # 目的のidを持つ要素とその子要素を取得
     target_id = "#personal-public-article-body"
     body = html.css(target_id)
 
-    #
+    # h3タグ以下を取得
+    title_array = body.xpath("//h3")
+
+    #################################
     # line-bot関連
-    #
+    #################################
+    # クライアント作成
     client = Line::Bot::Client.new { |config|
       config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
-    pp "===========-"
-    pp client
 
     # 自分のuserId
     user_id = ENV["LINE_MY_ID"]
 
-    # 署名確認？
-    # request_body = request.body.read
-    # signature = request.env['HTTP_X_LINE_SIGNATURE']
-    # unless client.validate_signature(request_body, signature)
-    #   head :bad_request
-    # end
-    # events = client.parse_events_from(request_body)
-
-
-    # num_array = []
+    #################################
+    # メッセージを作ってpush通知で送信
+    #################################
     i = 0
-    # h3タグ以下を取得
-    title_array = body.xpath("//h3")
-
     body.css('h3 ~ p').each do |node1|
 
       if node1.children.css('img')[0].attribute('alt').value == ":new:"
-        # imgのalt属性にnewを持つ記事の番号を記憶
-        # num_array.push(i)
-
-        # 記事タイトル
-        # article_title = title_array[i].children.css('a')[1].text
         # 記事url
         article_url = title_array[i].children.css('a')[1].attribute('href').text
+        # 本文作成
+        message = {
+          type: 'text',
+          text: article_url
+        }
 
-        # 送信
-        # events.each { |event|
-        #   case event
-        #   when Line::Bot::Event::Message
-        #     case event.type
-        #     when Line::Bot::Event::MessageType::Text
-              # 本文作成
-              message = {
-                type: 'text',
-                text: article_url
-              }
-
-              # 送信
-              client.push_message(user_id, message)
-          #   end
-          # end
-        # }
+        # プッシュ通知を送信
+        client.push_message(user_id, message)
       end
-      i += 1
-
-      # uri = URI('https://blueberry-custard-37486.herokuapp.com/callback')
-      # params = {
-      # }
-      # request = Net::HTTP.post_form(uri, params)
-
-      # request = post('https://git.heroku.com/blueberry-custard-37486.git/callback')
-      # ラインapi
-      # body = request.body
-      # pp "===========-body"
-      # pp body
-      # signature = request.env['HTTP_X_LINE_SIGNATURE']
-      # unless client.validate_signature(body, signature)
-      #   halt 400, {'Content-Type' => 'text/plain'}, 'Bad Request'
-      # end
-      # events = client.parse_events_from(body)
-      #
-      # events.each do |event|
-      #   pp event
-      #   case event
-      #   when Line::Bot::Event::Message
-      #     case event.type
-      #     when Line::Bot::Event::MessageType::Text
-      #       # メッセージ作成
-      #       message = {
-      #         type: 'text',
-      #         text: article_url
-      #       }
-      #
-      #       response = client.push_message("<to>", message)
-      #       pp response
-      #     end
-      #   end
-      # end
-      #
       "OK"
-
+      i += 1
     end
-    # pp num_array
 
   end
-
-  # def create_client
-  #   @client ||= Line::Bot::Client.new { |config|
-  #     config.channel_secret = ENV["LINE_CHANNEL_SECRET"]
-  #     config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
-  #   }
-  # end
-  #
-  # def callback(article_url)
-  #   body = request.body.read
-  #   signature = request.env['HTTP_X_LINE_SIGNATURE']
-  #   unless client.validate_signature(body, signature)
-  #     halt 400, {'Content-Type' => 'text/plain'}, 'Bad Request'
-  #   end
-  #   events = client.parse_events_from(body)
-  #
-  #   events.each do |event|
-  #     pp event
-  #     case event
-  #     when Line::Bot::Event::Message
-  #       case event.type
-  #       when Line::Bot::Event::MessageType::Text
-  #         # メッセージ作成
-  #         message = {
-  #           type: 'text',
-  #           text: article_url
-  #         }
-  #
-  #         response = client.push_message("<to>", message)
-  #       end
-  #     end
-  #   end
-  #
-  #   "OK"
-  # end
 end
