@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
-  post '/callback' => 'webhook#callback'
+  # post '/callback' => 'webhook#callback'
 
-  get '/' => 'index#index'
+  # get '/' => 'index#index'
 end

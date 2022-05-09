@@ -41,8 +41,9 @@ class Tasks::LineBotBatch
       config.channel_token = ENV["LINE_CHANNEL_TOKEN"]
     }
 
-    # 自分のuserId
-    user_id = ENV["LINE_MY_ID"]
+    # userId
+    user_ids = [ENV["LINE_MY_ID"], ENV["LINE_ID_2"]]
+
 
     #################################
     # メッセージを作ってpush通知で送信
@@ -59,8 +60,10 @@ class Tasks::LineBotBatch
           text: article_url
         }
 
-        # プッシュ通知を送信
-        client.push_message(user_id, message)
+        user_ids.each do |user_id|
+          # プッシュ通知を送信
+          client.push_message(user_id, message)
+        end
       end
       "OK"
       i += 1
